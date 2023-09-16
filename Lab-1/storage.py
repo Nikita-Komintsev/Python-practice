@@ -1,40 +1,71 @@
 import argparse
 import json
+import os
 import tempfile
 
-# Создаем парсер аргументов командной строки
-parser = argparse.ArgumentParser()
-parser.add_argument('--key', help='Имя ключа')
-parser.add_argument('--val', help='Значение')
-args = parser.parse_args()
 
-# Открываем или создаем временный файл хранилища
-storage_file = tempfile.NamedTemporaryFile(mode='a+', delete=False)
-storage_file.close()
+def get_storage_path():
+    # Создаем временную директорию и возвращаем путь к файлу хранилища
+    storage_directory = tempfile.gettempdir()
+    storage_path = os.path.join(storage_directory, 'storage.data')
+    return storage_path
 
-# Читаем данные из временного файла
-with open(storage_file.name, 'r+') as file:
-    try:
-        storage_data = json.load(file)
-    except json.decoder.JSONDecodeError:
-        storage_data = {}
 
-    # Если переданы оба ключа, добавляем значение по ключу и сохраняем данные в файл
-    if args.key and args.val:
-        if args.key in storage_data:
-            storage_data[args.key].append(args.val)
-        else:
-            storage_data[args.key] = [args.val]
-        file.seek(0)
-        json.dump(storage_data, file)
-    # Если передано только имя ключа, выводим значения по ключу из файла
-    elif args.key:
-        values = storage_data.get(args.key)
-        if values:
-            print(', '.join(values))
-        else:
-            print(None)
-    # Если не передано ни одного аргумента, выводим данные из файла
+def read_data():
+    # Чтение данных из файла хранилища
+    storage_path = get_storage_path()
+    if not os.path.exists(storage_path):
+        return {}
+
+    with open(storage_path, 'r') as file:
+        try:
+            data = json.load(file)
+        except json.JSONDecodeError:
+            data = {}
+
+    return data
+
+
+def write_data(data):
+    # Запись данных в файл хранилища
+    storage_path = get_storage_path()
+    with open(storage_path, 'w') as file:
+        json.dump(data, file)
+
+
+def add_value(key, value):
+    data = read_data()
+    if key in data:
+        data[key].append(value)
     else:
-        file.seek(0)
-        print(file.read())
+        data[key] = [value]
+    write_data(data)
+
+
+def get_values(key):
+    data = read_data()
+    return data.get(key, [])
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Key-Value Storage")
+    parser.add_argument("--key", type=str, help="Key for storing/retrieving values")
+    parser.add_argument("--val", type=str, help="Value to be stored")
+
+    args = parser.parse_args()
+
+    if args.key:
+        if args.val:
+            add_value(args.key, args.val)
+        else:
+            values = get_values(args.key)
+            if values:
+                print(", ".join(values))
+            else:
+                print("None")
+    else:
+        print("Key argument is required.")
+
+
+if __name__ == "__main__":
+    main()
