@@ -40,8 +40,7 @@ def count_word(file_name):
         for line in file:
             words = line.strip().split()
             for word in words:
-                word = word.strip('.,!?-:;')
-                # if word == '': continue
+                word = word.strip('.,!?-:;').lower()
                 if len(word) == 0:
                     continue
                 if word in word_dict:
@@ -49,46 +48,10 @@ def count_word(file_name):
                 else:
                     word_dict[word] = 1
 
-    for word, frequency in word_dict.items():
-        print(f"{word}: {frequency}")
+    for key, value in word_dict.items():
+        print(f"{key}: {value}")
 
 
 print('\n#4 Функция my_enumerate:')
-count_word("/home/nikita/PycharmProjects/Python-practice/Lab-1/text.txt")
+count_word("text.txt")
 
-# 5
-# def measure_time(func):
-#     def wrapper(*args, **kwargs):
-#         start_time = time.time()
-#         result = func(*args, **kwargs)
-#         end_time = time.time()
-#         execution_time = end_time - start_time
-#         print(f"Время выполнения функции {func.__name__}: {execution_time} секунд")
-#         return result
-#
-#     return wrapper
-#
-#
-# @measure_time
-# def square_with_for_loop(numbers):
-#     result = []
-#     for number in numbers:
-#         result.append(number ** 2)
-#     return result
-#
-#
-# @measure_time
-# def square_with_list_comprehension(numbers):
-#     return [number ** 2 for number in numbers]
-#
-#
-# @measure_time
-# def square_with_map(numbers):
-#     return list(map(lambda number: number ** 2, numbers))
-#
-#
-# numbers = [1, 2, 3, 4, 5]
-#
-# square_with_for_loop(numbers)
-# square_with_list_comprehension(numbers)
-# square_with_map(numbers)
