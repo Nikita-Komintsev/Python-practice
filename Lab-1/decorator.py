@@ -16,21 +16,21 @@ def decorator_time(func):
 def square_for(nums):
     result = []
     for num in nums:
-        result.append(num * num)
+        result.append(num ** 2)
     return result
 
 
 @decorator_time
 def square_list_comprehension(nums):
-    return [num * num for num in nums]
+    return [num ** 2 for num in nums]
 
 
 @decorator_time
 def square_map(nums):
-    return list(map(lambda x: x * x, nums))
+    return list(map(lambda x: x ** 2, nums))
 
 
-numbers = list(range(1, 1000001))
+numbers = list(range(1, 5))
 
 result1 = square_for(numbers)
 result2 = square_list_comprehension(numbers)
