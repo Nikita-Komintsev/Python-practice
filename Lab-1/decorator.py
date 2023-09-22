@@ -30,8 +30,8 @@ def square_map(nums):
     return list(map(lambda x: x ** 2, nums))
 
 
-numbers = list(range(1, 5))
+numbers = list(range(1, 10000001))
 
-result1 = square_for(numbers)
-result2 = square_list_comprehension(numbers)
-result3 = square_map(numbers)
+square_for(numbers)
+square_list_comprehension(numbers)
+square_map(numbers)
