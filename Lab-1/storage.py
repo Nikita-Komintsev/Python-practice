@@ -51,17 +51,16 @@ def main():
 
     args = parser.parse_args()
 
-    if args.key:
-        if args.val:
-            add_value(args.key, args.val)
-        else:
-            values = get_values(args.key)
-            if values:
-                print(", ".join(values))
-            else:
-                print("None")
+    if not args.key:
+        return print("Enter key")
+
+    if args.val:
+        add_value(args.key, args.val)
     else:
-        print("Enter key")
+        values = get_values(args.key)
+        if not values:
+            return print("None")
+        print(", ".join(values))
 
 
 if __name__ == "__main__":
