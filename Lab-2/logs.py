@@ -50,4 +50,4 @@ if __name__ == "__main__":
     logger2.warning("This is a warning message for logger2")
 
     print(id(logger))
-    print(id(logger2))
+    print(id(logger2))  #одиаковые

@@ -37,7 +37,7 @@ class Circle(Shape):
     def square(self):
         return math.pi * self.radius**2
 
-
+# if main -_main
 rectangle = Rectangle("Rectangle", 4, 5)
 triangle = Triangle("Triangle", 3, 6)
 circle = Circle("Circle", 2)

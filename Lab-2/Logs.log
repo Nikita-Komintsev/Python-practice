@@ -4,3 +4,9 @@
 [ERROR] 2023-10-13 19:40:38: Error message
 [CRITICAL] 2023-10-13 19:40:38: Critical message
 [WARNING] 2023-10-13 19:40:38: This is a warning message for logger2
+[DEBUG] 2023-10-18 16:37:16: Debug message
+[INFO] 2023-10-18 16:37:16: Info message
+[WARNING] 2023-10-18 16:37:16: Warning message
+[ERROR] 2023-10-18 16:37:16: Error message
+[CRITICAL] 2023-10-18 16:37:16: Critical message
+[WARNING] 2023-10-18 16:37:16: This is a warning message for logger2
