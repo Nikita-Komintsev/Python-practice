@@ -1,33 +1,52 @@
-
 import time
-from functools import wraps
 
-class TimingDecorator:
-    def __init__(self, func):
-        self.func = func
+
+class Decorator:
+    def __init__(self, function):
+        self.function = function
         self.call_history = []
 
-    def __call__(self, *args, **kwargs):
-        start_time = time.time()
-        result = self.func(*args, **kwargs)
-        end_time = time.time()
+    @property
+    def __name__(self):
+        return self.function.__name__
 
-        call_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        info = f"{call_time}: function {self.func.__name__} called with arguments {args}"
+    def log(self, *args, **kwargs):
+        t = time.localtime()
+        current_time = time.strftime("%H:%M:%S", t)
+        info = f"{current_time}: function {self.function.__name__} called with arguments {args}"
         self.call_history.append(info)
+        #print(f"\n<{current_time}>: function <{self.function.__name__}> called with arguments <{args}>")
 
-        print(f"Функция '{self.func.__name__}': {end_time - start_time:.4f} секунд")
+
+class TimerDecorator(Decorator):
+    @property
+    def __name__(self):
+        return self.function.__name__
+
+    def __call__(self, *args, **kwargs):
+        start = time.perf_counter()
+        result = self.function(*args, **kwargs)
+        self.finish = time.perf_counter() - start
+
+        self.log(*args, **kwargs)
+
+        print(f"\n{self.finish:.4f} in {__class__.__name__}")
         return result
 
 
-class HTMLTimingDecorator(TimingDecorator):
+class HtmlOutputDecorator(Decorator):
     def __call__(self, *args, **kwargs):
-        result = super().__call__(*args, **kwargs)
-        html_output = f"<html><body>{result}</body></html>"
-        return html_output
+        result = self.function(*args, **kwargs)
+
+        self.log(*args, **kwargs)
+
+        print(f"<html><body>{self.function.finish:.4f}</body></html> in {__class__.__name__}")
+
+        return result
 
 
-@HTMLTimingDecorator
+@HtmlOutputDecorator
+@TimerDecorator
 def square_for(nums):
     result = []
     for num in nums:
@@ -35,28 +54,34 @@ def square_for(nums):
     return result
 
 
-@HTMLTimingDecorator
+@HtmlOutputDecorator
+@TimerDecorator
 def square_list_comprehension(nums):
     return [num ** 2 for num in nums]
 
 
-@HTMLTimingDecorator
+@HtmlOutputDecorator
+@TimerDecorator
 def square_map(nums):
     return list(map(lambda x: x ** 2, nums))
 
 
 numbers = list(range(1, 10001))
 
-result1 = square_for(numbers)
-result2 = square_list_comprehension(numbers)
-result3 = square_map(numbers)
+square_for(numbers)
+square_list_comprehension(numbers)
+square_map(numbers)
 
-print("History:")
-for call_info in square_for.call_history:
-    print(call_info)
+print("\nHistory:")
+# for call_info in square_for.call_history:
+#     print(call_info)
+#
+# for call_info in square_list_comprehension.call_history:
+#     print(call_info)
+#
+# for call_info in square_map.call_history:
+#     print(call_info)
 
-for call_info in square_list_comprehension.call_history:
-    print(call_info)
-
-for call_info in square_map.call_history:
-    print(call_info)
+for func_decorator in [square_for, square_list_comprehension, square_map]:
+    for call_info in func_decorator.call_history:
+        print(call_info)
