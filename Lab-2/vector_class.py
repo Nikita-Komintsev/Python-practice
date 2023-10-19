@@ -21,8 +21,8 @@ class Vector:
     def scalar_product(self, other):
         return self.x * other.x + self.y * other.y
 
-    def length(self):
-        return (self.x ** 2 + self.y ** 2) ** 0.5
+    def __len__(self):
+        return int((self.x ** 2 + self.y ** 2) ** 0.5)
 
     def __str__(self):
         return f"<{self.x}; {self.y}>"
@@ -39,4 +39,4 @@ print(f'Вычитание: {v1 - v2}')
 print(f'Сравнение: {v1 == v2}  {v1 != v2}')
 print(f'Умножение на число: {v1 * 5}')
 print(f'Скалярное произведение: {v1.scalar_product(v2)}')
-print(f'Длина v2: {v2.length()}')
+print(f'Длина v2: {len(v2)}')
