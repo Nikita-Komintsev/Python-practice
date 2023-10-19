@@ -35,13 +35,13 @@ class Circle(Shape):
         self.radius = radius
 
     def square(self):
-        return math.pi * self.radius**2
+        return math.pi * self.radius ** 2
 
-# if main -_main
+
 rectangle = Rectangle("Rectangle", 4, 5)
 triangle = Triangle("Triangle", 3, 6)
 circle = Circle("Circle", 2)
 
-print(f"{rectangle.name} S = {rectangle.square()}")
-print(f"{triangle.name} S = {triangle.square()}")
-print(f"{circle.name} S = {circle.square()}")
+print(f"{rectangle.name} - {rectangle.square()}")
+print(f"{triangle.name} - {triangle.square()}")
+print(f"{circle.name} - {circle.square()}")
