@@ -2,16 +2,20 @@ import math
 
 
 class Shape:
-    def __init__(self, name):
-        self.name = name
+    name = "Shape"
+
+    def __init__(self):
+        pass
 
     def square(self):
         pass
 
 
 class Rectangle(Shape):
-    def __init__(self, name, width, height):
-        super().__init__(name)
+    name = "Rectangle"
+
+    def __init__(self, width, height):
+        super().__init__()
         self.width = width
         self.height = height
 
@@ -20,8 +24,10 @@ class Rectangle(Shape):
 
 
 class Triangle(Shape):
-    def __init__(self, name, base, height):
-        super().__init__(name)
+    name = "Triangle"
+
+    def __init__(self, base, height):
+        super().__init__()
         self.base = base
         self.height = height
 
@@ -30,17 +36,20 @@ class Triangle(Shape):
 
 
 class Circle(Shape):
-    def __init__(self, name, radius):
-        super().__init__(name)
+    name = "Circle"
+
+    def __init__(self, radius):
+        super().__init__()
         self.radius = radius
 
     def square(self):
         return math.pi * self.radius ** 2
 
 
-rectangle = Rectangle("Rectangle", 4, 5)
-triangle = Triangle("Triangle", 3, 6)
-circle = Circle("Circle", 2)
+rectangle = Rectangle(4, 5)
+triangle = Triangle(3, 6)
+circle = Circle(2)
+shape = Shape()
 
 print(f"{rectangle.name} - {rectangle.square()}")
 print(f"{triangle.name} - {triangle.square()}")
