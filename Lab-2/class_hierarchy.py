@@ -1,12 +1,14 @@
 import math
+from abc import ABC, abstractmethod
 
 
-class Shape:
+class Shape(ABC):
     name = "Shape"
 
     def __init__(self):
         pass
 
+    @abstractmethod
     def square(self):
         pass
 

@@ -29,14 +29,14 @@ class Vector:
     def __rmul__(self, scalar):
         return self * scalar
 
-    def __len__(self):
-        return int((self.x ** 2 + self.y ** 2) ** 0.5)
-
     def __abs__(self):
         return math.sqrt(self.x ** 2 + self.y ** 2)
 
     def __str__(self):
         return f"<{self.x}; {self.y}>"
+
+    def __repr__(self):
+        return str(self)
 
 
 v1 = Vector(1, 2)
@@ -52,3 +52,4 @@ print(f'Умножение на число: {v1 * 5}')
 print(f'Умножение числа на вектор: {7 * v1}')
 print(f'Скалярное произведение: {v1*v2}')
 print(f'Длина v2: {abs(v2)}')
+print(repr(v1))
