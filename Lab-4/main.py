@@ -1,65 +1,92 @@
-import aiohttp
+import urllib.parse as parse
 from aiohttp import web
-import json
-from datetime import datetime
-import requests
+import datetime
 
-app = web.Application()
+# Хранилище данных о лабораторных работах
+labs = {}
 
-lab_schedule = {}  # Словарь для хранения данных о лабораторных работах
 
-# Запрос для внесения лабораторной работы в расписание
-async def create_lab(request):
-    data = await request.json()
-    lab_name = data.get('name')
-    deadline_str = data.get('deadline')
-    description = data.get('description')
-    lab_schedule[lab_name] = {
+# Обработчик запроса для внесения лабораторной работы в расписание
+async def add_lab(request):
+    lab_data = await request.json()
+
+    lab_name = lab_data.get('name')
+    deadline = lab_data.get('deadline')
+    description = lab_data.get('description', '')
+
+    # Проверка наличия названия и уникальности
+    if not lab_name or lab_name in labs:
+        return web.json_response({'error': 'Lab name is required and must be unique'}, status=400)
+
+    # Проверка наличия дедлайна
+    if not deadline:
+        return web.json_response({'error': 'Deadline is required'}, status=400)
+
+    # Проверка формата дедлайна
+    try:
+        datetime.datetime.strptime(deadline, '%d.%m.%Y').date()
+    except ValueError:
+        return web.json_response({'error': 'Invalid deadline format. Use day.month.year (e.g., 01.01.2023)'},
+                                 status=400)
+
+    labs[lab_name] = {
         'name': lab_name,
-        'deadline': deadline_str,
+        'deadline': deadline,
         'description': description,
         'students': []
     }
-    return web.Response(text=f"Lab {lab_name} created. URL: /labs/{lab_name}")
+    url = f'http://0.0.0.0:8080/labs/{parse.quote(lab_name)}'
+    return web.json_response({'url': url})
 
-# Запрос для изменения полей лабораторной работы
+
+# Обработчик запроса для изменения лабораторной работы
 async def update_lab(request):
     lab_name = request.match_info['name']
-    if lab_name in lab_schedule:
-        data = await request.json()
-        lab_schedule[lab_name].update(data)
-        return web.Response(text=f"Lab {lab_name} updated")
-    else:
-        return web.Response(text=f"Lab {lab_name} not found", status=404)
 
-# Запрос для удаления лабораторной работы
+    if lab_name not in labs:
+        return web.json_response({'error': 'Lab not found'}, status=404)
+
+    lab_data = await request.json()
+    lab_data['name'] = lab_name
+
+    labs[lab_name] = lab_data
+    url = f'http://0.0.0.0:8080/labs/{parse.quote(lab_name)}'
+    return web.json_response({'url': url})
+
+
+# Обработчик запроса для удаления лабораторной работы
 async def delete_lab(request):
     lab_name = request.match_info['name']
-    if lab_name in lab_schedule:
-        del lab_schedule[lab_name]
-        return web.Response(text=f"Lab {lab_name} deleted")
-    else:
-        return web.Response(text=f"Lab {lab_name} not found", status=404)
 
-# Запрос для получения данных о лабораторной работе
+    if lab_name not in labs:
+        return web.json_response({'error': 'Lab not found'}, status=404)
+
+    del labs[lab_name]
+    return web.json_response({'message': 'Lab deleted'})
+
+
+# Обработчик запроса для получения данных о лабораторной работе
 async def get_lab(request):
     lab_name = request.match_info['name']
-    if lab_name in lab_schedule:
-        lab_data = lab_schedule[lab_name]
-        return web.Response(text=json.dumps(lab_data))
-    else:
-        return web.Response(text=f"Lab {lab_name} not found", status=404)
 
-# Запрос для получения данных обо всех лабораторных работах
+    if lab_name not in labs:
+        return web.json_response({'error': 'Lab not found'}, status=404)
+
+    return web.json_response(labs[lab_name])
+
+
+# Обработчик запроса для получения данных обо всех лабораторных работах
 async def get_all_labs(request):
-    labs_data = list(lab_schedule.values())
-    return web.Response(text=json.dumps(labs_data))
+    return web.json_response(list(labs.values()))
 
-app.router.add_post('/labs', create_lab)
+
+# Создание и запуск приложения
+app = web.Application()
+
+app.router.add_post('/labs', add_lab)
 app.router.add_patch('/labs/{name}', update_lab)
 app.router.add_delete('/labs/{name}', delete_lab)
 app.router.add_get('/labs/{name}', get_lab)
 app.router.add_get('/labs', get_all_labs)
 
-if __name__ == '__main__':
-    web.run_app(app, host='localhost', port=8080)
+web.run_app(app)

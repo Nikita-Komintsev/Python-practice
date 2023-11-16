@@ -1,0 +1,7 @@
+curl -X POST -H "Content-Type: application/json" -d '{"name": "Lab 1", "deadline": "01.01.2023", "description": "First lab"}' http://0.0.0.0:8080/labs
+
+curl -X PATCH -H "Content-Type: application/json" -d '{"deadline": "10.01.2023", "description": "Updated lab"}' http://0.0.0.0:8080/labs/Lab%201
+
+curl -X DELETE http://0.0.0.0:8080/labs/Lab%201
+
+curl http://0.0.0.0:8080/labs
