@@ -75,7 +75,6 @@ async def update_lab(request):
     return web.json_response({'url': url})
 
 
-# Обработчик запроса для удаления лабораторной работы
 async def delete_lab(request):
     lab_name = request.match_info['name']
 
@@ -86,7 +85,6 @@ async def delete_lab(request):
     return web.json_response({'message': f'Lab {lab_name} deleted'})
 
 
-# Обработчик запроса для получения данных о лабораторной работе
 async def get_lab(request):
     lab_name = request.match_info['name']
 
@@ -96,7 +94,6 @@ async def get_lab(request):
     return web.json_response(labs[lab_name])
 
 
-# Обработчик запроса для получения данных обо всех лабораторных работах
 async def get_all_labs(request):
     return web.json_response(list(labs.values()))
 
