@@ -23,6 +23,7 @@ async def add_lab(request):
         return web.json_response({'error': 'Deadline is required'}, status=400)
 
     # Проверка формата дедлайна
+    #TODO: вынести в отдельную функцию
     try:
         datetime.datetime.strptime(deadline, '%d.%m.%Y').date()
     except ValueError:
@@ -36,7 +37,7 @@ async def add_lab(request):
         'students': []
     }
     url = f'http://0.0.0.0:8080/labs/{parse.quote(lab_name)}'
-    return web.json_response({'url': url})
+    return web.json_response({'url ': url})
 
 
 # Обработчик запроса для изменения лабораторной работы
@@ -46,10 +47,32 @@ async def update_lab(request):
     if lab_name not in labs:
         return web.json_response({'error': 'Lab not found'}, status=404)
 
-    lab_data = await request.json()
-    lab_data['name'] = lab_name
+    existing_lab_data = labs[lab_name]
+    new_lab_data = await request.json()
 
-    labs[lab_name] = lab_data
+    # Проверка наличия только разрешенных полей
+    allowed_fields = {'name', 'deadline', 'description', 'students'}
+    invalid_fields = set(new_lab_data.keys()) - allowed_fields
+    if invalid_fields:
+        return web.json_response({'error': f'Invalid field(s): {", ".join(invalid_fields)}'}, status=400)
+
+        # Проверка на попытку изменения имени
+    if 'name' in new_lab_data and new_lab_data['name'] != lab_name:
+        return web.json_response({'error': 'Lab name cannot be changed'}, status=400)
+
+    # Сохранение текущих значений полей, если они не переданы в новых данных
+    new_lab_data.setdefault('name', lab_name)
+    new_lab_data.setdefault('deadline', existing_lab_data['deadline'])
+    new_lab_data.setdefault('description', existing_lab_data['description'])
+    new_lab_data.setdefault('students', existing_lab_data['students'])
+
+    # TODO: вынести в отдельную функцию
+    try:
+        datetime.datetime.strptime(new_lab_data['deadline'], '%d.%m.%Y').date()
+    except ValueError:
+        return web.json_response({'error': 'Invalid deadline format. Use day.month.year (e.g., 01.01.2023)'}, status=400)
+
+    labs[lab_name] = new_lab_data
     url = f'http://0.0.0.0:8080/labs/{parse.quote(lab_name)}'
     return web.json_response({'url': url})
 
@@ -80,7 +103,6 @@ async def get_all_labs(request):
     return web.json_response(list(labs.values()))
 
 
-# Создание и запуск приложения
 app = web.Application()
 
 app.router.add_post('/labs', add_lab)
