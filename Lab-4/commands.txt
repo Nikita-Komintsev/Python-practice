@@ -1,0 +1,10 @@
+
+python3 client.py --add Lab1 --deadline  01.01.2023 --description DESCR
+
+python3 client.py --update Lab1 --deadline  03.01.2023 --description "NEW DESCR" --students Student1,Student2
+
+python3 client.py --delete Lab1
+
+python3 client.py --get_lab Lab1
+
+python3 client.py --get_all

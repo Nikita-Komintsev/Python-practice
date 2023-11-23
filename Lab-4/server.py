@@ -2,7 +2,7 @@ import urllib.parse
 from aiohttp import web
 import datetime
 
-labs = {}
+labs = dict()
 
 
 def validate_deadline_format(deadline):
@@ -38,7 +38,7 @@ async def add_lab(request):
         'name': lab_name,
         'deadline': deadline,
         'description': description,
-        'students': []
+        'students': ""
     }
     url = create_lab_url(lab_name)
     return web.json_response({'url': url})
@@ -82,7 +82,7 @@ async def delete_lab(request):
         return web.json_response({'error': 'Lab not found'}, status=404)
 
     del labs[lab_name]
-    return web.json_response({'message': f'Lab {lab_name} deleted'})
+    return web.json_response({'message': f'Laboratory {lab_name} deleted'})
 
 
 async def get_lab(request):
