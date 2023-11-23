@@ -4,9 +4,11 @@ import argparse
 import json
 import csv
 
+#   TO DO: --students ПЕРЕДАВАТЬ В НОРМАЛЬНОМ ВИДЕ
+#   TO DO: учесть что students может быть пустой строкой
+
 
 class Client:
-
     def __init__(self, url):
         self.url = url
 
@@ -19,10 +21,12 @@ class Client:
 
     @staticmethod
     def write_lab_data_to_csv(labs_data, file_name):
-        print(labs_data)
+        # Проверка на случай, если передан словарь, а не массив
+        if isinstance(labs_data, dict):
+            labs_data = [labs_data]
+
         with open(f'{file_name}.csv', mode='w', newline='', encoding='utf-8') as file:
-            # Определяем заголовки CSV-файла
-            fieldnames = ['Имя лабораторной'] + [lab['name'] for lab in labs_data]
+            fieldnames = ['Название'] + [lab['name'] for lab in labs_data]
 
             # Создаем объект writer с указанными заголовками
             writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -38,14 +42,14 @@ class Client:
 
             # Записываем данные по лабораторным работам
             for key in ['Дедлайн', 'Описание'] + list(all_students):
-                row_data = {'Имя лабораторной': key}
+                row_data = {'Название': key}
                 for lab in labs_data:
                     if key == 'Дедлайн':
                         row_data[lab['name']] = lab['deadline']
                     elif key == 'Описание':
                         row_data[lab['name']] = lab['description']
                     else:
-                        row_data[lab['name']] = '+' if key in lab.get('students', '').split(',') else ''
+                        row_data[lab['name']] = '+' if key in students and any(name.strip() for name in students) else ''
 
                 # Записываем данные в файл
                 writer.writerow(row_data)
@@ -86,16 +90,6 @@ class Client:
                         self.write_lab_data_to_csv(data, name)
                     except Exception as ex:
                         print(ex)
-                # if response.status == 200:
-                #     try:
-                #         # res = await response.json()
-                #         # await self.export_labs({text: res}, text)
-                #         data = await response.json()  # Предполагаем, что данные приходят в формате JSON
-                #         await self.write_to_csv(data)
-                #     except Exception as inst:
-                #         print(type(inst))  # the exception type
-                #         print(inst.args)  # arguments stored in .args
-                #         print(inst)  # __str__ allows args to be printed directly,
 
     async def get_all(self):
         async with aiohttp.ClientSession() as session:
@@ -106,14 +100,6 @@ class Client:
                     self.write_lab_data_to_csv(data, 'all_labs')
                 except Exception as ex:
                     print(ex)
-                # if response.status == 200:
-                #     try:
-                #         res = await response.json()
-                #         await self.export_labs(res, 'all_labs')
-                #     except Exception as inst:
-                #         print(type(inst))  # the exception type
-                #         print(inst.args)  # arguments stored in .args
-                #         print(inst)  # __str__ allows args to be printed directly,
 
 
 async def main(cli_args):
