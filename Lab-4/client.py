@@ -91,7 +91,7 @@ class Client:
                 await self.print_response(response)
                 try:
                     data = await response.json()  # Предполагаем, что данные приходят в формате JSON
-                    self.write_lab_data_to_csv(data, 'all_labs')
+                    self.write_lab_data_to_csv(data, 'all_info_labs')
                 except Exception as ex:
                     print(ex)
 
