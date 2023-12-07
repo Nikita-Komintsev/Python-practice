@@ -12,6 +12,9 @@ class Client:
     @staticmethod
     async def print_response(response):
         print(f"Status: {response.status}")
+        location_header = response.headers.get('Location', '')
+        if len(location_header):
+            print(f'URL:{location_header}')
         text = await response.text()
         if text:
             print(text)

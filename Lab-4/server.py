@@ -41,7 +41,10 @@ async def add_lab(request):
         'students': ""
     }
     url = create_lab_url(lab_name)
-    return web.json_response({'message': f'{lab_name} added', 'url': url})
+
+    headers = {'Location': url}
+    return web.Response(status=201, headers=headers)
+    # return web.json_response({'message': f'{lab_name} added', 'url': url}, status=201, headers=headers)
 
 
 async def update_lab(request):
