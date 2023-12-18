@@ -1,12 +1,12 @@
 
-python3 client.py --add Lab1 --deadline  24.11.2023 --description Python
-python3 client.py --add Lab2 --deadline  08.12.2023 --description JS
+python3 Client.py --add Lab1 --deadline  24.11.2023 --description Python
+python3 Client.py --add Lab2 --deadline  08.12.2023 --description JS
 
-python3 client.py --update Lab2 --deadline  10.12.2023 --description "new description" --students "Ivanov I.I.,Smirnov S.S."
-python3 client.py --update Lab1 --deadline  24.11.2023 --students "Ivanov I.I.,Sidorov A.A."
+python3 Client.py --update Lab2 --deadline  10.12.2023 --description "JS + PHP" --students "Ivanov I.I.,Smirnov S.S."
+python3 Client.py --update Lab1 --deadline  24.11.2023 --students "Ivanov I.I.,Sidorov A.A."
 
-python3 client.py --delete Lab1
+python3 Client.py --delete Lab1
 
-python3 client.py --get_lab Lab1
+python3 Client.py --get_lab Lab1
 
-python3 client.py --get_all
+python3 Client.py --get_all
